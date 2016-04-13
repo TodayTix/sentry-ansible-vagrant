@@ -4,7 +4,7 @@
     db_sentry:
       name: sentry
       user: sentry
-      password: sentry
+      password: sentrysentry
     superuser_sentry:
       username: admin
       email: admin@example.com
@@ -18,7 +18,6 @@
     - python
     - supervisor
     - role: nginx
-      nginx_sites: none
-    - postgres
+      nginx_sites: none 
     - sentry
 

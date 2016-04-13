@@ -17,7 +17,11 @@
     virtualenv: /var/sentry/ve
     virtualenv_site_packages: no
     
-- name: Copy sentry configuration
+- name: Copy sentry yaml configuration
+  template: src=config.yaml.j2 dest=/var/sentry/config.yaml
+  notify: restart nginx
+
+- name: Copy sentry python configuration
   template: src=sentry_conf.py.j2 dest=/var/sentry/sentry_conf.py
   notify: restart nginx
 
