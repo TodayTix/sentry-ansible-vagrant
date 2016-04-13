@@ -19,5 +19,6 @@
     - supervisor
     - role: nginx
       nginx_sites: none 
+    - postgres
     - sentry
 
