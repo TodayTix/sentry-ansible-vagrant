@@ -1,8 +1,8 @@
 [program:sentry-web]
 user=sentry
 directory=/var/sentry/
-environment=SENTRY_CONF="/var/sentry"
-command=/var/sentry/ve/bin/sentry --config="/var/sentry" start
+environment=SENTRY_CONF="/etc/sentry"
+command=/var/sentry/ve/bin/sentry --config="/etc/sentry" start
 autostart=true
 autorestart=true
 redirect_stderr=true
@@ -12,8 +12,8 @@ stderr_logfile=syslog
 [program:sentry-worker]
 user=sentry
 directory=/var/sentry/
-environment=SENTRY_CONF="/var/sentry"
-command=/var/sentry/ve/bin/sentry --config="/var/sentry" celery worker
+environment=SENTRY_CONF="/etc/sentry"
+command=/var/sentry/ve/bin/sentry --config="/etc/sentry" celery worker
 autostart=true
 autorestart=true
 redirect_stderr=true
@@ -23,8 +23,8 @@ stderr_logfile=syslog
 [program:sentry-cron]
 user=sentry
 directory=/var/sentry/
-environment=SENTRY_CONF="/var/sentry"
-command=/var/sentry/ve/bin/sentry --config="/var/sentry" celery beat
+environment=SENTRY_CONF="/etc/sentry"
+command=/var/sentry/ve/bin/sentry --config="/etc/sentry" celery beat
 autostart=true
 autorestart=true
 redirect_stderr=true

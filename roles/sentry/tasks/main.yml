@@ -7,15 +7,15 @@
 - name: create sentry user
   action: user name=sentry group=1000 state=present
 
-- name: ensure sentry directory exists
+- name: ensure sentry var directory exists
   file:
     path: /var/sentry/
     state: directory
     owner: sentry
 
-- name: ensure sentry directory exists
+- name: ensure sentry etc directory exists
   file:
-    path: /var/sentry/
+    path: /etc/sentry/
     state: directory
     owner: sentry
 
@@ -32,13 +32,13 @@
     virtualenv_site_packages: no
     
 - name: Copy sentry yaml configuration
-  template: src=config.yml.j2 dest=/var/sentry/config.yml
+  template: src=config.yml.j2 dest=/etc/sentry/config.yml
   notify: restart nginx
   tags:
     - upgrade
 
 - name: Copy sentry python configuration
-  template: src=sentry.conf.py.j2 dest=/var/sentry/sentry.conf.py
+  template: src=sentry.conf.py.j2 dest=/etc/sentry/sentry.conf.py
   notify: restart nginx
   tags:
     - upgrade
@@ -64,7 +64,7 @@
 
 # Shell executable needs to be changed because Ubuntu uses /bin/dash when invoking /bin/sh, which doesn't support source. 
 # see http://stackoverflow.com/questions/13702425/source-command-not-found-in-sh-shell
-- shell: /var/sentry/ve/bin/sentry --config=/var/sentry/ upgrade --noinput
+- shell: /var/sentry/ve/bin/sentry --config=/etc/sentry/ upgrade --noinput
   notify:
     - restart nginx
     - reload supervisor
