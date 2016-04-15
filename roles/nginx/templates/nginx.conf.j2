@@ -14,9 +14,7 @@ events {
     worker_connections  {{ nginx_max_clients }};
 }
 
-
-http {
-
+http {        
         include /etc/nginx/mime.types;
         default_type application/octet-stream;
 {% for k,v in nginx_http_params.iteritems() %}

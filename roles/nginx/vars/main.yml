@@ -8,6 +8,6 @@ redhat_pkg:
 
 ubuntu_pkg:
   - python-selinux
-  - nginx
+  - nginx-full
 
   
