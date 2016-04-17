@@ -1,6 +1,7 @@
 - include_vars: "{{ ansible_os_family }}.yml"
 
 - shell: sudo service supervisor stop
+  ignore_errors: True
   tags:
     - upgrade
 
@@ -25,12 +26,42 @@
     virtualenv: /var/sentry/ve
     virtualenv_site_packages: no
     
+- name: install github auth
+  pip: 
+    name: 'https://github.com/getsentry/sentry-auth-github/archive/master.zip'
+    virtualenv: /var/sentry/ve
+    virtualenv_site_packages: no
+
+- name: install github integration
+  pip: 
+    name: sentry-github
+    virtualenv: /var/sentry/ve
+    virtualenv_site_packages: no
+
+- name: install sentry integration
+  pip: 
+    name: sentry-slack
+    virtualenv: /var/sentry/ve
+    virtualenv_site_packages: no
+
+- name: install trello integration
+  pip: 
+    name: sentry-trello
+    virtualenv: /var/sentry/ve
+    virtualenv_site_packages: no
+
 - name: install memcached
   pip:
     name: python-memcached
     virtualenv: /var/sentry/ve
     virtualenv_site_packages: no
     
+- shell: /var/sentry/ve/bin/sentry config generate-secret-key
+  register: sentry_secret_key
+  ignore_errors: True
+  tags:
+    - upgrade
+
 - name: Copy sentry yaml configuration
   template: src=config.yml.j2 dest=/etc/sentry/config.yml
   notify: restart nginx
@@ -70,12 +101,14 @@
     - reload supervisor
   tags:
     - upgrade
-# # This is a bit of a hack to create a superuser automatically without interactive input. TODO: Create a proper python script for this!
-# - name: create admin user
-#   action: shell source ve/bin/activate && export SENTRY_CONF=/var/sentry/ && python -c "from sentry.utils.runner import configure; configure(); from django.db import DEFAULT_DB_ALIAS as database; from sentry.models import User; User.objects.db_manager(database).create_superuser('{{ superuser_sentry.username }}', '{{ superuser_sentry.email }}', '{{ superuser_sentry.password }}')" executable=/bin/bash chdir=/var/sentry
-#   notify:
-#     - restart nginx
-#     - reload supervisor
+
+# This is a bit of a hack to create a superuser automatically without interactive input. TODO: Create a proper python script for this!
+- name: create admin user
+  action: shell source ve/bin/activate && export SENTRY_CONF=/var/sentry/ && python -c "from sentry.utils.runner import configure; configure(); from django.db import DEFAULT_DB_ALIAS as database; from sentry.models import User; User.objects.db_manager(database).create_superuser('{{ superuser_sentry.username }}', '{{ superuser_sentry.email }}', '{{ superuser_sentry.password }}')" executable=/bin/bash chdir=/var/sentry
+  ignore_errors: True
+  notify:
+    - restart nginx
+    - reload supervisor
     
 - shell: sudo service nginx restart && sudo service supervisor start
   tags:

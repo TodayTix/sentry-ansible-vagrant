@@ -11,8 +11,7 @@
       password: admin
     sentry:
       server: sentry.todaytix.com
-      url: https://sentry.todaytix.com
-      secret_key: 'my69eAMYjzqtmfaRJ107MeXCYDTaxQdNZPr8YOf/zOV5pIUoZa5biA=='
+      url: https://sentry.todaytix.com      
   roles:
     - common
     - python
